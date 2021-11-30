@@ -27,14 +27,19 @@
     <div id="map" class="map"></div>
         <div id="popup" class="ol-popup">
             <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-            <form method ="post" action="/">
             <div id="popup-content">
-                <form method ="post" action="/">
-                <button></button>
             </div>
-            </form>
         </div>
     <script type="text/javascript">
+        
+        
+        
+        var sheltersNames = ["Fulton County Animal Services", "Atlanta Humane Society", "DeKalb County Animal Services", "Best Friends Lifesaving Center"];
+        var shelterLongCoords = [-84.2781, -84.2361,-84.2873, -84.2100];
+        var sheltersLatCoords = [33.4900, 33.4677,33.4721,33.4922];
+        var fileNames = ["AnimalList"];
+
+
         var attribution = new ol.control.Attribution({
         collapsible: false
         });
@@ -47,19 +52,41 @@
             ],
             view: new ol.View({
                 center: ol.proj.fromLonLat([-84.2341 ,33.4633]),
-                zoom: 18
+                zoom: 15
             })
         });
-        var layer = new ol.layer.Vector({
-        source: new ol.source.Vector({
-            features: [
-                    new ol.Feature({
-                        geometry: new ol.geom.Point(ol.proj.fromLonLat([-84.2341 ,33.4633]))
-                    })
-                ]
-            })
-        });
-        map.addLayer(layer);
+        var style = new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(0, 0, 50, 0.3)'
+                }),
+                stroke: new ol.style.Stroke({
+                    width: 2,
+                    color: 'rgba(0, 0, 50, 0.8)'
+                }),
+                image: new ol.style.Circle({
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0, 0, 50, 0.5)'
+                    }),
+                    stroke: new ol.style.Stroke({
+                        width: 1,
+                        color: 'rgba(0, 0, 50, 0.8)'
+                    }),
+                    radius: 7
+                }),
+            });
+        for (i = 0; i < 4; i++) {
+            var layer = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    features: [
+                            new ol.Feature({
+                                geometry: new ol.geom.Point(ol.proj.fromLonLat([shelterLongCoords[i], sheltersLatCoords[i]]))
+                            })
+                        ]
+                    }),
+                style: style
+            });
+            map.addLayer(layer);
+        }
         var container = document.getElementById('popup');
         var content = document.getElementById('popup-content');
         var closer = document.getElementById('popup-closer');
@@ -81,8 +108,14 @@
         map.on('singleclick', function (event) {
             if (map.hasFeatureAtPixel(event.pixel) === true) {
                 var coordinate = event.coordinate;
-
-                content.innerHTML = '<button name = \"ShelterID\">Visit Shelter</button>';
+                var featName = "";
+                for (i = 0; i < 4; i ++) {
+                    coords =  ol.proj.fromLonLat([shelterLongCoords[i], sheltersLatCoords[i]]);                    
+                    if ((100 > (coordinate[0] - coords[0])) && ((coordinate[0] - coords[0]) > -100)) {
+                        featName = sheltersNames[i];
+                    }
+                }
+                content.innerHTML = `<form method ="post" action="/" name = "${featName}" > <div class = \'column\'><div> ${featName}</div><div> <button name = \"ShelterID\">Visit Shelter</button></div></div> </form>`;
                 overlay.setPosition(coordinate);
             } else {
                 overlay.setPosition(undefined);
