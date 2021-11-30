@@ -11,9 +11,11 @@ const port = process.env.PORT || 3000
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const _server = express()
 _server.set('view engine', 'ejs')
-//const findAPet = require('/frontend/findAPet')
 
 function requestHandler(obj) {
+    // write to a JSON file
+    // File locations for images of animals
+    // Delete info after going back
     var newFile = '/frontend/login.html'
     if (isLogin(obj)) {
         newFile = '/frontend/findAPet.html'
