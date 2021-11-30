@@ -13,12 +13,12 @@ const _server = express()
 _server.set('view engine', 'ejs')
 //const findAPet = require('/frontend/findAPet')
 
-function isEmpty(obj) {
-    for(var prop in obj) {
-        if(obj.hasOwnProperty(prop))
-            return false;
+function requestHandler(obj) {
+    var newFile = '/frontend/login.html'
+    if (isLogin(obj)) {
+        newFile = '/frontend/findAPet.html'
     }
-    return JSON.stringify(obj) === JSON.stringify({});
+    return newFile
 }
 
 function isLogin(obj) {
@@ -45,11 +45,7 @@ _server.get('/', function(req, res) {
 _server.post('/', function(req, res) {
     console.log(__dirname)
     console.log(req.body)
-    var newFile = '/frontend/login.html'
-    if (isLogin(req.body)) {
-        newFile = '/frontend/findAPet.html'
-    }
-    res.sendFile(path.join(__dirname, newFile))
+    res.sendFile(path.join(__dirname, requestHandler(req.body)))
 })
 
 _server.get('/frontend/styles.css', function(req, res) {
