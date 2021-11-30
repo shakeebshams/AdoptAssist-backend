@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 import axios from 'axios'
 import ejs from 'ejs'
 import dotenv from 'dotenv'
-import { truncateSync } from 'fs'
+import fs from 'fs'
 dotenv.config()
 
 const port = process.env.PORT || 3000
@@ -18,6 +18,13 @@ function requestHandler(obj) {
     // Delete info after going back
     var newFile = '/frontend/login.html'
     if (isLogin(obj)) {
+        const data = JSON.stringify(obj)
+        fs.writeFile('currentshelter.json', data, (err) => {
+            if (err) {
+                throw err;
+            }
+        })
+        console.log("Saved info to file")
         newFile = '/frontend/findAPet.html'
     }
     return newFile
