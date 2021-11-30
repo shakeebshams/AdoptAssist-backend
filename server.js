@@ -11,7 +11,6 @@ const port = process.env.PORT || 3000
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const _server = express()
 _server.set('view engine', 'ejs')
-//const findAPet = require('/frontend/findAPet')
 
 function isEmpty(obj) {
     for(var prop in obj) {
