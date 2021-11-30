@@ -270,6 +270,18 @@ header {
 	margin-top: 50px;
 }
 
+bigTitle {
+	color: #0000;
+	font-size: 40px;
+	-webkit-align-self: center;
+	-ms-flex-item-align: center;
+	align-self: center;
+	padding: 2rem;
+	max-width: 960px;
+	text-align: center;
+
+}
+
 @media only screen and (max-height: 700px) {
 .title h1 {
 	font-size: 80px;
