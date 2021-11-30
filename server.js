@@ -21,6 +21,13 @@ function isEmpty(obj) {
     return JSON.stringify(obj) === JSON.stringify({});
 }
 
+function isLogin(obj) {
+    if (obj.hasOwnProperty('email') && obj.hasOwnProperty('password')) {
+        return (obj.email != '' && obj.password != '')
+    }
+    return false
+}
+
 _server.use(express.urlencoded({extended: true}))
 _server.use(express.json())
 
@@ -37,9 +44,10 @@ _server.get('/', function(req, res) {
 
 _server.post('/', function(req, res) {
     console.log(__dirname)
-    var newFile = '/frontend/findAPet.html'
-    if (isEmpty(req.body)) {
-        newFile = '/frontend/login.html'
+    console.log(req.body)
+    var newFile = '/frontend/login.html'
+    if (isLogin(req.body)) {
+        newFile = '/frontend/findAPet.html'
     }
     res.sendFile(path.join(__dirname, newFile))
 })
