@@ -115,7 +115,7 @@
                         featName = sheltersNames[i];
                     }
                 }
-                content.innerHTML = `<form method ="post" action="/" name = "${featName}" > <div class = \'column\'><div> ${featName}</div><div> <button name = \"ShelterID\">Visit Shelter</button></div></div> </form>`;
+                content.innerHTML = `<form method ="post" action="/" name = "${featName}" > <div class = \'column\'><div> ${featName}</div><div> <button name = ${featName}>Visit Shelter</button></div></div> </form>`;
                 
                 overlay.setPosition(coordinate);
             } else {

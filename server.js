@@ -13,19 +13,12 @@ const _server = express()
 _server.set('view engine', 'ejs')
 
 function requestHandler(obj) {
-    // write to a JSON file
-    // File locations for images of animals
-    // Delete info after going back
     var newFile = '/frontend/login.html'
     if (isLogin(obj)) {
-        const data = JSON.stringify(obj)
-        fs.writeFile('currentshelter.json', data, (err) => {
-            if (err) {
-                throw err;
-            }
-        })
-        console.log("Saved info to file")
         newFile = '/frontend/findAPet.html'
+    }
+    if (isShelter(obj) != '') {
+        newFile = isShelter(obj)
     }
     return newFile
 }
@@ -35,6 +28,22 @@ function isLogin(obj) {
         return (obj.email != '' && obj.password != '')
     }
     return false
+}
+
+function isShelter(obj) {
+    if (obj.hasOwnProperty('Fulton')) {
+        return '/frontend/shelter1.html'
+    }
+    if (obj.hasOwnProperty('Atlanta')) {
+        return '/frontend/shelter2.html'
+    }
+    if (obj.hasOwnProperty('DeKalb')) {
+        return '/frontend/shelter3.html'
+    }
+    if (obj.hasOwnProperty('Best')) {
+        return '/frontend/shelter4.html'
+    }
+    return '';
 }
 
 _server.use(express.urlencoded({extended: true}))
