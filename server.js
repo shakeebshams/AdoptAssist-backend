@@ -14,7 +14,9 @@ const _server = express()
 _server.set('view engine', 'ejs')
 
 let currentShelter
-let selectedAnimals
+let savedAnimals = []
+let upcomingAppts = []
+let animalsWithSurveys = []
 let currentAnimal
 
 function requestHandler(obj) {
@@ -88,7 +90,7 @@ _server.post('/', function(req, res) {
 let location_animals = {
     'Best': [{
             url: `https://picsum.photos/200`,
-            name: `BEST 1`,
+            name: `Josh`,
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -96,7 +98,7 @@ let location_animals = {
         },
         {
             url: `https://picsum.photos/200`,
-            name: `BEST 2`,
+            name: `Dooly`,
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -104,7 +106,7 @@ let location_animals = {
         },
         {
             url: `https://picsum.photos/200`,
-            name: `BEST 3`,
+            name: `Bud`,
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -112,7 +114,7 @@ let location_animals = {
         },
         {
             url: `https://picsum.photos/200`,
-            name: `BEST 4`,
+            name: `Light`,
             age: '7',
             breed: 'Something',           
             info: 'Something About the Animal',
@@ -130,7 +132,7 @@ let location_animals = {
         },
         {
             url: `https://picsum.photos/200`,
-            name: `Atlanta Humane 2`,
+            name: `Monkey`,
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -138,7 +140,7 @@ let location_animals = {
         },
         {
             url: `https://picsum.photos/200`,
-            name: `Atlanta Humane 3`,
+            name: `NotMonkey`,
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -146,7 +148,7 @@ let location_animals = {
         },
         {
             url: `https://picsum.photos/200`,
-            name: `Atlanta Humane 4`,
+            name: `Smoll`,
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -155,7 +157,7 @@ let location_animals = {
     ],
     'Fulton': [{
             url: `https://picsum.photos/200`,
-            name: 'Fulton County',
+            name: 'AJ',
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -163,7 +165,7 @@ let location_animals = {
         },
         {
             url: `https://picsum.photos/200`,
-            name: 'Fulton County',
+            name: 'StellaArtois',
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -171,7 +173,7 @@ let location_animals = {
         },
         {
             url: `https://picsum.photos/200`,
-            name: 'Fulton County',
+            name: 'BingeDrinking',
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -179,7 +181,7 @@ let location_animals = {
         },
         {
             url: `https://picsum.photos/200`,
-            name: 'Fulton County',
+            name: 'Cocaine',
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -188,7 +190,7 @@ let location_animals = {
     ],
     'DeKalb': [{
             url: `https://picsum.photos/200`,
-            name: 'Dekalb County',
+            name: 'AlexisTexas',
             age: '7',
             breed: 'Something',            
             info: 'Something About the Animal',
@@ -196,21 +198,21 @@ let location_animals = {
         },
         {
             url: `https://picsum.photos/200`,
-            name: 'Dekalb County',
+            name: 'TummyTux',
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
         },
         {
             url: `https://picsum.photos/200`,
-            name: 'Dekalb County',
+            name: 'PromNight',
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
         },
         {
             url: `https://picsum.photos/200`,
-            name: 'Dekalb County',
+            name: 'Punk',
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
@@ -225,15 +227,12 @@ let location_animals = {
         }
     ]
 }
-_server.post('/shelter', function(req, res) {
-    console.log('function called')
-    console.log(__dirname)
-    console.log(req.body)
-    isShelter(req.body)
-    let location = req.body.location;
+
+function getHTMLToRenderForShelter(obj) {
+    currentShelter = obj.location
+    let location = obj.location
     console.log(location)
     let details_from_db = location_animals[location]
-    console.log(details_from_db)
     let arr_of_html = []
 
     let header =`<div class="title">
@@ -263,22 +262,55 @@ _server.post('/shelter', function(req, res) {
                         </li>
                     </form>`
 
-        arr_of_html.push(html)
-        console.log(html)
+        arr_of_html.push(html);
     })
+    return arr_of_html;
+}
+
+
+_server.post('/shelter', function(req, res) {
+    console.log(req.body)
+    let arr_of_html = getHTMLToRenderForShelter(req.body)
+
     res.render('shelter1', {form: arr_of_html});
     //res.sendFile(path.join(__dirname, requestHandler(req.body)))
 })
 
 _server.post('/SetUpMeetingTimePage', function(req, res) { 
     console.log(req.body)
+    console.log(currentShelter)
     let HTMLToReturn = []
     currentAnimal = req.body.petName
+    let animal_from_db = location_animals[currentShelter]
+    console.log(animal_from_db)
+    animal_from_db = animal_from_db.find(x => x.name == currentAnimal)
 
     let startHTML = `<div class="title">
                     <div><span class="typcn typcn-heart-outline icon heading"></span></div>
                         <div class="smallsep heading"></div>
+                            <img src ="${animal_from_db.url}" width="10px" height="100px">
                             <h1 class="heading" style = "text-align: center;"> ${currentAnimal}</h1>
+                            <h2 class="heading">Adopt Me</h2>
+
+                            <h3 class="heading">A little bit about me!</h3>
+                            <h4 class="heading">Name: ${animal_from_db.name}</h4>
+                            <h4 class="heading">Age: ${animal_from_db.age}</h4>
+                            <h4 class="heading">${animal_from_db.info}</h4>
+
+
+                            <h3 class="heading">First fill outa  time to meet me!</h3>
+                            <form method="post" action="/shelter">
+                                <button disabled = ${upcomingAppts.length > 0 || (upcomingAppts.filter(x => x.name == currentAnimal).length > 0)}>
+                                    Set up an appointment
+                                </button>
+                            </form>
+
+                            <h3 class="heading">Optionally fill out an adoption form!</h3>
+                            <form method="post" action="/shelter">
+                                <button name = "backToMap" disabled = ${upcomingAppts.length > 0 || (upcomingAppts.filter(x => x.name == currentAnimal).length > 0)}>
+                                    Fill out Adoption Form
+                                </button>
+                            </form>
                             <div class="mouse">
                         <div class="wheel"></div>
                         </div>
@@ -286,17 +318,41 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
     HTMLToReturn.push(startHTML)
 
     let endHTML = `
+                    <div class = "row">
                     <form method="post" action="/shelter">
                     <input type="text" name="location" id="location1" hidden value=${currentShelter}>
                         <button name = "backToMap">
                             Back
                         </button>
                     </form>
+                    <form method="post" action="/saveAnimal">
+                    <input type="text" name="petName" id="petName" hidden value=${currentAnimal}>
+                        <button name = "backToMap">
+                            Or save me for later!
+                        </button>
+                    </form>
+                    </div>
                     `
     
     HTMLToReturn.push(endHTML)
  
     res.render('SetUpMeetingTimePage', {form: HTMLToReturn});
+    })
+
+_server.post('/meetingTimePage', function(req, res) { 
+
+
+
+})
+
+_server.post('/saveAnimal', function(req, res) { 
+    currentAnimal = req.body.petName
+    if (savedAnimals.filter(x => x.name == currentAnimal) == 0) {
+        let animal_from_db = location_animals[currentShelter].find(x => x.name == currentAnimal)
+        savedAnimals.push(animal_from_db)
+    }
+    let arr_of_html = getHTMLToRenderForShelter({location: currentShelter})
+    res.render('shelter1', {form: arr_of_html});
 })
 
 _server.get('/views/styles.css', function(req, res) {
