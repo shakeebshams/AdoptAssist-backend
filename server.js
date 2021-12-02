@@ -284,9 +284,16 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
     let animal_from_db = location_animals[currentShelter]
     console.log(animal_from_db)
     animal_from_db = animal_from_db.find(x => x.name == currentAnimal)
+    let appointmentDisabled = ''
+    let formDisabled = ''
+    if (!((upcomingAppts.length > 0) && (upcomingAppts.filter(x => x.name == currentAnimal).length != 0))) {
+        formDisabled = 'disabled = "true"'
+    } else {
+        appointmentDisabled = 'disabled = "true"'
+    }
 
     let startHTML = `<div class="title">
-                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                        <div><span class="typcn typcn-heart-outline icon heading"></span></div>
                         <div class="smallsep heading"></div>
                             <img src ="${animal_from_db.url}" width="10px" height="100px">
                             <h1 class="heading" style = "text-align: center;"> ${currentAnimal}</h1>
@@ -299,15 +306,16 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
 
 
                             <h3 class="heading">First fill outa  time to meet me!</h3>
-                            <form method="post" action="/shelter">
-                                <button disabled = ${upcomingAppts.length > 0 || (upcomingAppts.filter(x => x.name == currentAnimal).length > 0)}>
+                            <form method="post" action="/meetingTimePage">
+                                <input type="text" name="petName" id="petName" hidden value=${currentAnimal}>
+                                <button name = ${currentShelter} ${appointmentDisabled}>
                                     Set up an appointment
                                 </button>
                             </form>
 
                             <h3 class="heading">Optionally fill out an adoption form!</h3>
                             <form method="post" action="/shelter">
-                                <button name = "backToMap" disabled = ${upcomingAppts.length > 0 || (upcomingAppts.filter(x => x.name == currentAnimal).length > 0)}>
+                                <button name = "fillOutForm" ${formDisabled}>
                                     Fill out Adoption Form
                                 </button>
                             </form>
@@ -340,7 +348,121 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
     })
 
 _server.post('/meetingTimePage', function(req, res) { 
+    let HTMLToReturn = []
+    isShelter(req.body)
+    let animal_from_db = location_animals[currentShelter]
+    console.log(currentShelter)
+    animal_from_db = animal_from_db.find(x => x.name == req.body.petName)
 
+    let startHTML = `<div class="title">
+                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                        <div class="smallsep heading"></div>
+                            <img src ="${animal_from_db.url}" width="10px" height="100px">
+                            <h1 class="heading" style = "text-align: center;"> ${currentAnimal}</h1>
+                            <h2 class="heading">Set Up A day to meet Me</h2>
+                            <div type = "column" class = "column">
+                                <form method="post" action="/completeMeetingTime">
+                                <input type="text" name="name" id="name" hidden value=${currentAnimal}>
+                                <input type="text" name="location" id="location" hidden value=${currentShelter}>
+
+                                <div>
+                                    <label for ="date">Choose a date for your appointment:</label>
+                                </div>
+                                <div>
+                                    <input type="date" id="start" name="trip-start"
+                                        value="2021-12-02"
+                                        min="2021-12-03" max="2022-01-31">
+                                </div>
+                                <div>
+                                    <label for="appt">Choose a time for your appointment:</label>
+                                </div>
+                                <div>
+                                    <input type="time" id="appt" name="appt"
+                                        min="09:00" max="18:00" required>
+                                </div>
+                                <div>
+                                    <small>Shelter hours are 9am to 6pm</small>
+                                </div>
+
+                                <div>
+                                    <label for="inputName">Let us know a bit about you!</label>
+                                </div>
+                                <div>
+                                    <input id="inputName" name="firstName" placeholder = "First Name">
+                                </div>
+                                <div>
+                                    <input id="inputName" name="lastName" placeholder = "Last Name">
+                                </div>
+                                <div>
+                                    <input id="inputName" name="phoneNumber" placeholder = "Phone Number">
+                                </div>
+
+                                <div>
+                                    <input type = "submit">
+                                </div>
+
+                                </form>
+                            </div>
+                            <div class="mouse">
+                            <div class="wheel"></div>
+                        </div>
+                   `
+
+    HTMLToReturn.push(startHTML)
+
+    let endHTML =  `
+                    <div>
+                        <form method="post" action="/setUpMeetingTimePage">
+                            <input type="text" name="petName" id="petName" hidden value=${req.body.petName}>
+                            <button name = "backToMap">
+                                Back
+                            </button>
+                        </form>
+                            <form method="post" action="/saveAnimal">
+                            <input type="text" name="petName" id="petName" hidden value=${currentAnimal}>
+                                <button name = "backToMap">
+                                    Or save me for later!
+                                </button>
+                            </form>
+                        </div>
+                    </a> </div>
+                    `
+    HTMLToReturn.push(startHTML)
+    HTMLToReturn.push(endHTML)
+
+    res.render('meetingTimePage', {form: HTMLToReturn});
+
+})
+
+_server.post('/completeMeetingTime', function(req, res) { 
+
+    console.log(req.body)
+    upcomingAppts.push(req.body)
+    let animal_from_db = location_animals[currentShelter]
+    //console.log(currentShelter)
+    animal_from_db = animal_from_db.find(x => x.name == req.body.name)
+    let HTMLToReturn = []
+
+    let startHTML = `<div class="title">
+                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                        <div class="smallsep heading"></div>
+                            <img src ="${animal_from_db.url}" width="10px" height="100px">
+                            <h1 class="heading" style = "text-align: center;"> Completed!</h1>
+                        </div>`
+    let endHTML =  `
+                        <div>
+                            <form method="post" action="/setUpMeetingTimePage">
+                                <input type="text" name="petName" id="petName" hidden value=${req.body.name}>
+                                <button name = "backToMap">
+                                    Back
+                                </button>
+                            </form>
+                        </a> </div>
+                        `
+    HTMLToReturn.push(startHTML)
+    HTMLToReturn.push(endHTML)
+
+    res.render('meetingTimePage', {form: HTMLToReturn});
 
 
 })
