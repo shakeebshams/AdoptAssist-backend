@@ -47,19 +47,19 @@ function isLogin(obj) {
 
 function isShelter(obj) {
     if (obj.hasOwnProperty('Fulton')) {
-        currentShelter = 'Fulton County Animal Services'
+        currentShelter = 'Fulton'
         return '/views/shelter1.html'
     }
     if (obj.hasOwnProperty('Atlanta')) {
-        currentShelter = 'Atlanta Humane Society'
+        currentShelter = 'Atlanta'
         return '/views/shelter1.html'
     }
     if (obj.hasOwnProperty('DeKalb')) {
-        currentShelter = 'DeKalb County Animal Services'
+        currentShelter = 'DeKalb'
         return '/views/shelter1.html'
     }
     if (obj.hasOwnProperty('Best')) {
-        currentShelter = 'Best Friends Lifesaving Center'
+        currentShelter = 'Best'
         return '/views/shelter1.html'
     }
     return '';
@@ -92,7 +92,7 @@ let location_animals = {
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
-
+            shelterName: 'Best Friends Lifesaving Center'
         },
         {
             url: `https://picsum.photos/200`,
@@ -121,10 +121,11 @@ let location_animals = {
     ],
     'Atlanta': [{
             url: `https://picsum.photos/200`,
-            name: `Atlanta Humane 1`,
+            name: `Rosie`,
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
+            shelterName:'Atlanta Humane Society',
 
         },
         {
@@ -158,7 +159,7 @@ let location_animals = {
             age: '7',
             breed: 'Something',
             info: 'Something About the Animal',
-
+            shelterName: 'Fulton County Animal Services'
         },
         {
             url: `https://picsum.photos/200`,
@@ -191,6 +192,7 @@ let location_animals = {
             age: '7',
             breed: 'Something',            
             info: 'Something About the Animal',
+            shelterName: 'DeKalb County Animal Services',
         },
         {
             url: `https://picsum.photos/200`,
@@ -229,13 +231,15 @@ _server.post('/shelter', function(req, res) {
     console.log(req.body)
     isShelter(req.body)
     let location = req.body.location;
+    console.log(location)
     let details_from_db = location_animals[location]
+    console.log(details_from_db)
     let arr_of_html = []
 
     let header =`<div class="title">
                     <div><span class="typcn typcn-heart-outline icon heading"></span></div>
                         <div class="smallsep heading"></div>
-                            <h1 class="heading" style = "text-align: center;"> ${currentShelter}</h1>
+                            <h1 class="heading" style = "text-align: center;"> ${details_from_db[0].shelterName}</h1>
                             <div class="mouse">
                         <div class="wheel"></div>
                         </div>
@@ -252,16 +256,47 @@ _server.post('/shelter', function(req, res) {
                             ${details.info}
                         </div>
                     </li>
-                    <li style = "text-align: center; align-items: center;">
-                        <form method ="post" action="/">
-                            <button name = ${details.name} >Select</button>
-                        </form>
-                    </li>`
+                    <form method ="post" action="/SetUpMeetingTimePage">
+                    <input type="text" name="petName" id="petName" hidden value=${details.name}>
+                        <li style = "text-align: center; align-items: center;">
+                                <button name = ${details.name} >Meet Me!</button>
+                        </li>
+                    </form>`
+
         arr_of_html.push(html)
         console.log(html)
     })
     res.render('shelter1', {form: arr_of_html});
     //res.sendFile(path.join(__dirname, requestHandler(req.body)))
+})
+
+_server.post('/SetUpMeetingTimePage', function(req, res) { 
+    console.log(req.body)
+    let HTMLToReturn = []
+    currentAnimal = req.body.petName
+
+    let startHTML = `<div class="title">
+                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                        <div class="smallsep heading"></div>
+                            <h1 class="heading" style = "text-align: center;"> ${currentAnimal}</h1>
+                            <div class="mouse">
+                        <div class="wheel"></div>
+                        </div>
+                    </a> </div>`
+    HTMLToReturn.push(startHTML)
+
+    let endHTML = `
+                    <form method="post" action="/shelter">
+                    <input type="text" name="location" id="location1" hidden value=${currentShelter}>
+                        <button name = "backToMap">
+                            Back
+                        </button>
+                    </form>
+                    `
+    
+    HTMLToReturn.push(endHTML)
+ 
+    res.render('SetUpMeetingTimePage', {form: HTMLToReturn});
 })
 
 _server.get('/views/styles.css', function(req, res) {
