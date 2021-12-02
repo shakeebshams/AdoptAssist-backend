@@ -18,6 +18,7 @@ let savedAnimals = []
 let upcomingAppts = []
 let animalsWithSurveys = []
 let currentAnimal
+let currentUserEmail
 
 function requestHandler(obj) {
     var newFile = '/views/login.html'
@@ -42,7 +43,10 @@ function isBackToMap(obj) {
 
 function isLogin(obj) {
     if (obj.hasOwnProperty('email') && obj.hasOwnProperty('password')) {
-        return (obj.email != '' && obj.password != '')
+        if (obj.email != '' && obj.password != '') {
+            currentUserEmail = obj.email
+            return true
+        }
     }
     return false
 }
@@ -302,6 +306,7 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
                             <h3 class="heading">A little bit about me!</h3>
                             <h4 class="heading">Name: ${animal_from_db.name}</h4>
                             <h4 class="heading">Age: ${animal_from_db.age}</h4>
+                            <h4 class="heading">Age: ${animal_from_db.breed}</h4>
                             <h4 class="heading">${animal_from_db.info}</h4>
 
 
@@ -364,6 +369,8 @@ _server.post('/meetingTimePage', function(req, res) {
                                 <form method="post" action="/completeMeetingTime">
                                 <input type="text" name="name" id="name" hidden value=${currentAnimal}>
                                 <input type="text" name="location" id="location" hidden value=${currentShelter}>
+                                <input type="text" name="email" id="email" hidden value=${currentUserEmail}>
+
 
                                 <div>
                                     <label for ="date">Choose a date for your appointment:</label>
@@ -471,7 +478,7 @@ _server.post('/saveAnimal', function(req, res) {
     currentAnimal = req.body.petName
     if (savedAnimals.filter(x => x.name == currentAnimal) == 0) {
         let animal_from_db = location_animals[currentShelter].find(x => x.name == currentAnimal)
-        savedAnimals.push(animal_from_db)
+        savedAnimals.push({animal: animal_from_db, email: currentUserEmail})
     }
     let arr_of_html = getHTMLToRenderForShelter({location: currentShelter})
     res.render('shelter1', {form: arr_of_html});
