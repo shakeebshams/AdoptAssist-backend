@@ -5,6 +5,7 @@ import axios from 'axios'
 import ejs from 'ejs'
 import dotenv from 'dotenv'
 import fs from 'fs'
+import { dirname } from 'path/posix'
 dotenv.config()
 
 const port = process.env.PORT || 3000
@@ -24,7 +25,17 @@ function requestHandler(obj) {
     if (isShelter(obj) != '') {
         newFile = isShelter(obj)
     }
+    if (isBackToMap(obj)) {
+        newFile = '/views/findAPet.html'
+    }
     return newFile
+}
+
+function isBackToMap(obj) {
+    if (obj.hasOwnProperty('backToMap')) {
+        return true
+    }
+    return false
 }
 
 function isLogin(obj) {
@@ -36,20 +47,20 @@ function isLogin(obj) {
 
 function isShelter(obj) {
     if (obj.hasOwnProperty('Fulton')) {
-        currentShelter = 'Fulton'
+        currentShelter = 'Fulton County Animal Services'
         return '/views/shelter1.html'
     }
     if (obj.hasOwnProperty('Atlanta')) {
-        currentShelter = 'Atlanta'
-        return '/views/shelter2.html'
+        currentShelter = 'Atlanta Humane Society'
+        return '/views/shelter1.html'
     }
     if (obj.hasOwnProperty('DeKalb')) {
-        currentShelter = 'Atlanta'
-        return '/views/shelter3.html'
+        currentShelter = 'DeKalb County Animal Services'
+        return '/views/shelter1.html'
     }
     if (obj.hasOwnProperty('Best')) {
-        currentShelter = 'Best'
-        return '/views/shelter4.html'
+        currentShelter = 'Best Friends Lifesaving Center'
+        return '/views/shelter1.html'
     }
     return '';
 }
@@ -73,93 +84,177 @@ _server.post('/', function(req, res) {
     console.log(req.body)
     res.sendFile(path.join(__dirname, requestHandler(req.body)))
 })
+
 let location_animals = {
     'Best': [{
             url: `https://picsum.photos/200`,
-            name: `BEST 1`
+            name: `BEST 1`,
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         },
         {
             url: `https://picsum.photos/200`,
-            name: `BEST 2`
+            name: `BEST 2`,
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         },
         {
             url: `https://picsum.photos/200`,
-            name: `BEST 3`
+            name: `BEST 3`,
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         },
         {
             url: `https://picsum.photos/200`,
-            name: `BEST 4`
+            name: `BEST 4`,
+            age: '7',
+            breed: 'Something',           
+            info: 'Something About the Animal',
+
         },
     ],
     'Atlanta': [{
             url: `https://picsum.photos/200`,
-            name: `Atlanta Humane 1`
+            name: `Atlanta Humane 1`,
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         },
         {
             url: `https://picsum.photos/200`,
-            name: `Atlanta Humane 2`
+            name: `Atlanta Humane 2`,
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         },
         {
             url: `https://picsum.photos/200`,
-            name: `Atlanta Humane 3`
+            name: `Atlanta Humane 3`,
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         },
         {
             url: `https://picsum.photos/200`,
-            name: `Atlanta Humane 4`
+            name: `Atlanta Humane 4`,
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         },
     ],
     'Fulton': [{
             url: `https://picsum.photos/200`,
             name: 'Fulton County',
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         },
         {
             url: `https://picsum.photos/200`,
             name: 'Fulton County',
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         },
         {
             url: `https://picsum.photos/200`,
             name: 'Fulton County',
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         },
         {
             url: `https://picsum.photos/200`,
             name: 'Fulton County',
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+
         }
     ],
-    'Dekalb': [
-        {
+    'DeKalb': [{
             url: `https://picsum.photos/200`,
             name: 'Dekalb County',
+            age: '7',
+            breed: 'Something',            
+            info: 'Something About the Animal',
         },
         {
             url: `https://picsum.photos/200`,
             name: 'Dekalb County',
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
         },
         {
             url: `https://picsum.photos/200`,
             name: 'Dekalb County',
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
         },
         {
             url: `https://picsum.photos/200`,
             name: 'Dekalb County',
-        }
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+        },
     ],
+    'Random': [{
+            url: `https://picsum.photos/200`,
+            name: 'Dekalb County',
+            age: '7',
+            breed: 'Something',
+            info: 'Something About the Animal',
+        }
+    ]
 }
 _server.post('/shelter', function(req, res) {
     console.log('function called')
     console.log(__dirname)
     console.log(req.body)
+    isShelter(req.body)
     let location = req.body.location;
     let details_from_db = location_animals[location]
     let arr_of_html = []
+
+    let header =`<div class="title">
+                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                        <div class="smallsep heading"></div>
+                            <h1 class="heading" style = "text-align: center;"> ${currentShelter}</h1>
+                            <div class="mouse">
+                        <div class="wheel"></div>
+                        </div>
+                    </a> </div>`
+    arr_of_html.push(header)
 
     details_from_db.forEach(async function(details) {
         let html = `<li style = "text-align: center; align-items: center;">
                         <h4>Animal: ${details.name}</h4>
                         <img src ="${details.url}" width="10px" height="100px">
+                        <div class = "Row"> 
+                            ${details.age}
+                            ${details.breed}
+                            ${details.info}
+                        </div>
                     </li>
                     <li style = "text-align: center; align-items: center;">
                         <form method ="post" action="/">
-                            <button>Select</button>
+                            <button name = ${details.name} >Select</button>
                         </form>
                     </li>`
         arr_of_html.push(html)
