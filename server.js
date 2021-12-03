@@ -18,7 +18,6 @@ let savedAnimals = []
 let upcomingAppts = []
 let animalsWithSurveys = []
 let currentAnimal
-let currentUserEmail
 
 function requestHandler(obj) {
     var newFile = '/views/login.html'
@@ -43,10 +42,7 @@ function isBackToMap(obj) {
 
 function isLogin(obj) {
     if (obj.hasOwnProperty('email') && obj.hasOwnProperty('password')) {
-        if (obj.email != '' && obj.password != '') {
-            currentUserEmail = obj.email
-            return true
-        }
+        return (obj.email != '' && obj.password != '')
     }
     return false
 }
@@ -93,141 +89,141 @@ _server.post('/', function(req, res) {
 
 let location_animals = {
     'Best': [{
-            url: `https://picsum.photos/200`,
-            name: `Josh`,
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://yt3.ggpht.com/ytc/AKedOLRvxGYSdEHqu0X4EYcJ2kq7BttRKBNpfwdHJf3FSg=s900-c-k-c0x00ffffff-no-rj`,
+            name: `Bella`,
+            age: '1',
+            breed: 'Yellow Lab',
+            info: 'Bella is not potty-trained yet, but has learned simple commands and loves walks and pets',
             shelterName: 'Best Friends Lifesaving Center'
         },
         {
-            url: `https://picsum.photos/200`,
-            name: `Dooly`,
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/golden-retriever-royalty-free-image-506756303-1560962726.jpg?crop=0.672xw:1.00xh;0.166xw,0&resize=640:*`,
+            name: `Luna`,
+            age: '3',
+            breed: 'Golden Retriever',
+            info: 'Luna is well-trained and very affectionate, and loves her toys',
 
         },
         {
-            url: `https://picsum.photos/200`,
-            name: `Bud`,
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg`,
+            name: `Charlie`,
+            age: '1',
+            breed: 'Mixed Breed',
+            info: 'Charlie loves to bark, but is affectionate and good with kids',
 
         },
         {
-            url: `https://picsum.photos/200`,
-            name: `Light`,
+            url: `https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/funny-dog-captions-1563456605.jpg`,
+            name: `Lucy`,
             age: '7',
-            breed: 'Something',           
-            info: 'Something About the Animal',
+            breed: 'Australian Shepherd',           
+            info: 'Lucy is very well-trained and loves walks and running around in parks',
 
         },
     ],
     'Atlanta': [{
-            url: `https://picsum.photos/200`,
-            name: `Rosie`,
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://i.guim.co.uk/img/media/fe1e34da640c5c56ed16f76ce6f994fa9343d09d/0_174_3408_2046/master/3408.jpg?width=1200&height=900&quality=85&auto=format&fit=crop&s=0d3f33fb6aa6e0154b7713a00454c83d`,
+            name: `Cooper`,
+            age: '2',
+            breed: 'Pug',
+            info: 'Cooper can be nervous around other dogs, but loves humans and treats',
             shelterName:'Atlanta Humane Society',
 
         },
         {
-            url: `https://picsum.photos/200`,
-            name: `Monkey`,
+            url: `https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F28%2F2020%2F10%2F13%2Fcorgi-dog-POPDOGNAME1020.jpg`,
+            name: `Max`,
             age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            breed: 'Corgi',
+            info: 'Max is a great dog that loves long walks and belly rubs',
 
         },
         {
-            url: `https://picsum.photos/200`,
-            name: `NotMonkey`,
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/smartest-dog-breeds-1553287693.jpg?crop=0.673xw:1.00xh;0.167xw,0&resize=640:*`,
+            name: `Bailey`,
+            age: '4',
+            breed: 'German Shepherd',
+            info: 'Bailey is very well-trained, affectionate, and loves kids',
 
         },
         {
-            url: `https://picsum.photos/200`,
-            name: `Smoll`,
+            url: `https://www.cesarsway.com/wp-content/uploads/2019/10/AdobeStock_190562703-768x535.jpeg`,
+            name: `Daisy`,
             age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            breed: 'Entlebucher',
+            info: 'Daisy loves playing with toys and running around at the dog park',
 
         },
     ],
     'Fulton': [{
-            url: `https://picsum.photos/200`,
-            name: 'AJ',
+            url: `https://cdn.britannica.com/q:60/49/161649-050-3F458ECF/Bernese-mountain-dog-grass.jpg`,
+            name: 'Sadie',
             age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            breed: 'Australian Shepherd',
+            info: 'Sadie sheds a lot, but is a great dog and loves pets',
             shelterName: 'Fulton County Animal Services'
         },
         {
-            url: `https://picsum.photos/200`,
-            name: 'StellaArtois',
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/6/2019/10/08113321/Dog-behavior-Kasper-Luijsterburg.jpg`,
+            name: 'Lola',
+            age: '3',
+            breed: 'Panda Shepherd',
+            info: 'Lola can be nervous around strangers, but is very affectionate and loves to run',
 
         },
         {
-            url: `https://picsum.photos/200`,
-            name: 'BingeDrinking',
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F47%2F2021%2F03%2F25%2Fdoberman-pinscher-red-collar-1100812121-2000.jpg`,
+            name: 'Buddy',
+            age: '4',
+            breed: 'Doberman Pinscher',
+            info: 'Buddy is a great guard dog, but is still friendly with strangers',
 
         },
         {
-            url: `https://picsum.photos/200`,
-            name: 'Cocaine',
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://i1.wp.com/www.opindia.com/wp-content/uploads/2021/07/istockphoto-1163331995-612x612-1.jpg?fit=612%2C408&ssl=1`,
+            name: 'Molly',
+            age: '6',
+            breed: 'Black Lab',
+            info: 'Molly is a lovable, obedient dog that loves to play fetch and run around outside',
 
         }
     ],
     'DeKalb': [{
-            url: `https://picsum.photos/200`,
-            name: 'AlexisTexas',
-            age: '7',
-            breed: 'Something',            
-            info: 'Something About the Animal',
+            url: `https://i.inews.co.uk/content/uploads/2020/07/PRI_156427438.jpg`,
+            name: 'Stella',
+            age: '5',
+            breed: 'Yellow Lab',            
+            info: 'Stella loves to go to the park and hang out with other dogs',
             shelterName: 'DeKalb County Animal Services',
         },
         {
-            url: `https://picsum.photos/200`,
-            name: 'TummyTux',
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://cdn.cnn.com/cnnnext/dam/assets/201030094143-stock-rhodesian-ridgeback-super-tease.jpg`,
+            name: 'Tucker',
+            age: '3',
+            breed: 'Mixed Breed',
+            info: 'Tucker loves to be chased around and played with, and is very obedient',
         },
         {
-            url: `https://picsum.photos/200`,
-            name: 'PromNight',
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8d2hpdGUlMjBkb2d8ZW58MHx8MHx8&w=1000&q=80`,
+            name: 'Bear',
+            age: '3',
+            breed: 'Samoyed',
+            info: 'Bear',
         },
         {
-            url: `https://picsum.photos/200`,
-            name: 'Punk',
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://i.insider.com/521cd2136bb3f7df4c7c0a06?width=1000&format=jpeg&auto=webp`,
+            name: 'Zoey',
+            age: '4',
+            breed: 'West Highland White Terrier',
+            info: 'Zoey is a bit nervous around new people and dogs, but is affectionate and obedient once acquainted',
         },
     ],
     'Random': [{
-            url: `https://picsum.photos/200`,
-            name: 'Dekalb County',
-            age: '7',
-            breed: 'Something',
-            info: 'Something About the Animal',
+            url: `https://vetstreet.brightspotcdn.com/dims4/default/acfa4c4/2147483647/crop/0x0%2B0%2B0/resize/645x380/quality/90/?url=https%3A%2F%2Fvetstreet-brightspot.s3.amazonaws.com%2F7b%2F0526609e8c11e0a2380050568d634f%2Ffile%2FBeagle-3-645mk062311.jpg`,
+            name: 'Duke',
+            age: '4',
+            breed: 'Beagle',
+            info: 'DUKE',
         }
     ]
 }
@@ -306,7 +302,6 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
                             <h3 class="heading">A little bit about me!</h3>
                             <h4 class="heading">Name: ${animal_from_db.name}</h4>
                             <h4 class="heading">Age: ${animal_from_db.age}</h4>
-                            <h4 class="heading">Age: ${animal_from_db.breed}</h4>
                             <h4 class="heading">${animal_from_db.info}</h4>
 
 
@@ -369,8 +364,6 @@ _server.post('/meetingTimePage', function(req, res) {
                                 <form method="post" action="/completeMeetingTime">
                                 <input type="text" name="name" id="name" hidden value=${currentAnimal}>
                                 <input type="text" name="location" id="location" hidden value=${currentShelter}>
-                                <input type="text" name="email" id="email" hidden value=${currentUserEmail}>
-
 
                                 <div>
                                     <label for ="date">Choose a date for your appointment:</label>
@@ -478,7 +471,7 @@ _server.post('/saveAnimal', function(req, res) {
     currentAnimal = req.body.petName
     if (savedAnimals.filter(x => x.name == currentAnimal) == 0) {
         let animal_from_db = location_animals[currentShelter].find(x => x.name == currentAnimal)
-        savedAnimals.push({animal: animal_from_db, email: currentUserEmail})
+        savedAnimals.push(animal_from_db)
     }
     let arr_of_html = getHTMLToRenderForShelter({location: currentShelter})
     res.render('shelter1', {form: arr_of_html});
