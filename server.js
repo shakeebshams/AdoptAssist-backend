@@ -14,6 +14,7 @@ const _server = express()
 _server.set('view engine', 'ejs')
 
 let currentShelter
+let currentUserEmail
 let savedAnimals = []
 let upcomingAppts = []
 let animalsWithAdoptionForms = []
@@ -41,8 +42,11 @@ function isBackToMap(obj) {
 }
 
 function isLogin(obj) {
-    if (obj.hasOwnProperty('email') && obj.hasOwnProperty('password')) {
-        return (obj.email != '' && obj.password != '')
+    if (obj.hasOwnProperty('email') && obj.hasOwnProperty('password')) { 
+        if (obj.email != '' && obj.password != '') {
+            currentUserEmail = obj.email
+            return true;
+        }
     }
     return false
 }
@@ -256,7 +260,7 @@ function getHTMLToRenderForShelter(obj) {
                         </div>
                     </li>
                     <form method ="post" action="/SetUpMeetingTimePage">
-                    <input type="text" name="petName" id="petName" hidden value=${details.name}>
+                    <input type="text" name="name" id="name" hidden value=${details.name}>
                         <li style = "text-align: center; align-items: center;">
                                 <button name = ${details.name} >Meet Me!</button>
                         </li>
@@ -280,16 +284,18 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
     //console.log(req.body)
     //console.log(currentShelter)
     let HTMLToReturn = []
-    currentAnimal = req.body.petName
+    currentAnimal = req.body.name
     let animal_from_db = location_animals[currentShelter]
     //console.log(animal_from_db)
     animal_from_db = animal_from_db.find(x => x.name == currentAnimal)
     let appointmentDisabled = ''
     let formDisabled = ''
+    //console.log(upcomingAppts)
+    //console.log(currentUserEmail)
     if (!((upcomingAppts.length > 0) && (upcomingAppts.filter(x => x.name == currentAnimal && x.email == currentUserEmail).length != 0))) {
         formDisabled = 'disabled = "true"'
     } else {
-        if (completedForms.length > 0 && (completedForms.filter(x => x => x.name == currentAnimal && x.email == currentUserEmail).length != 0)) {
+        if (animalsWithAdoptionForms.length > 0 && (animalsWithAdoptionForms.filter(x => x => x.name == currentAnimal && x.email == currentUserEmail).length != 0)) {
             formDisabled = 'disabled = "true"'
         }
         appointmentDisabled = 'disabled = "true"'
@@ -310,7 +316,7 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
 
                             <h3 class="heading">First fill outa  time to meet me!</h3>
                             <form method="post" action="/meetingTimePage">
-                                <input type="text" name="petName" id="petName" hidden value=${currentAnimal}>
+                                <input type="text" name="name" id="name" hidden value=${currentAnimal}>
                                 <button name = ${currentShelter} ${appointmentDisabled}>
                                     Set up an appointment
                                 </button>
@@ -318,7 +324,7 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
 
                             <h3 class="heading">Optionally fill out an adoption form!</h3>
                             <form method="post" action="/adoptionForm">
-                                <input type="text" name="petName" id="petName" hidden value=${currentAnimal}>
+                                <input type="text" name="name" id="name" hidden value=${currentAnimal}>
                                 <button name = "fillOutForm" ${formDisabled}>
                                     Fill out Adoption Form
                                 </button>
@@ -338,7 +344,7 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
                         </button>
                     </form>
                     <form method="post" action="/saveAnimal">
-                    <input type="text" name="petName" id="petName" hidden value=${currentAnimal}>
+                    <input type="text" name="name" id="name" hidden value=${currentAnimal}>
                         <button name = "backToMap">
                             Or save me for later!
                         </button>
@@ -356,7 +362,7 @@ _server.post('/meetingTimePage', function(req, res) {
     isShelter(req.body)
     let animal_from_db = location_animals[currentShelter]
     //console.log(currentShelter)
-    animal_from_db = animal_from_db.find(x => x.name == req.body.petName)
+    animal_from_db = animal_from_db.find(x => x.name == req.body.name)
 
     let startHTML = `<div class="title">
                     <div><span class="typcn typcn-heart-outline icon heading"></span></div>
@@ -368,6 +374,7 @@ _server.post('/meetingTimePage', function(req, res) {
                                 <form method="post" action="/completeMeetingTime">
                                 <input type="text" name="name" id="name" hidden value=${currentAnimal}>
                                 <input type="text" name="location" id="location" hidden value=${currentShelter}>
+                                <input type="text" name="email" id="email" hidden value=${currentUserEmail}>
 
                                 <div>
                                     <label for ="date">Choose a date for your appointment:</label>
@@ -417,13 +424,13 @@ _server.post('/meetingTimePage', function(req, res) {
     let endHTML =  `
                     <div>
                         <form method="post" action="/setUpMeetingTimePage">
-                            <input type="text" name="petName" id="petName" hidden value=${req.body.petName}>
+                            <input type="text" name="name" id="name" hidden value=${req.body.name}>
                             <button name = "backToMap">
                                 Back
                             </button>
                         </form>
                             <form method="post" action="/saveAnimal">
-                            <input type="text" name="petName" id="petName" hidden value=${currentAnimal}>
+                            <input type="text" name="name" id="name" hidden value=${currentAnimal}>
                                 <button name = "backToMap">
                                     Or save me for later!
                                 </button>
@@ -443,9 +450,9 @@ _server.post('/completeMeetingTime', function(req, res) {
     console.log(req.body)
     upcomingAppts.push(req.body)
     let animal_from_db = location_animals[currentShelter]
-    //console.log(currentShelter)
-    animal_from_db = animal_from_db.find(x => x.name == req.body.petName)
-    if (savedAnimals.filter(x => x.animal.name == req.body.petName && x.email == currentUserEmail).length == 0) {
+    console.log(currentShelter)
+    animal_from_db = animal_from_db.find(x => x.name == req.body.name)
+    if (savedAnimals.filter(x => x.animal.name == req.body.name && x.email == currentUserEmail).length == 0) {
         savedAnimals.push({animal: animal_from_db, email: currentUserEmail})
     }
     let HTMLToReturn = []
@@ -459,7 +466,7 @@ _server.post('/completeMeetingTime', function(req, res) {
     let endHTML =  `
                         <div>
                             <form method="post" action="/setUpMeetingTimePage">
-                                <input type="text" name="petName" id="petName" hidden value=${req.body.name}>
+                                <input type="text" name="name" id="name" hidden value=${req.body.name}>
                                 <button name = "backToMap">
                                     Back
                                 </button>
@@ -473,10 +480,10 @@ _server.post('/completeMeetingTime', function(req, res) {
 })
 
 _server.post('/saveAnimal', function(req, res) { 
-    currentAnimal = req.body.petName
-    if (savedAnimals.filter(x => x.animal.name == req.body.petName && x.email == currentUserEmail).length == 0) {
+    currentAnimal = req.body.name
+    if (savedAnimals.filter(x => x.animal.name == req.body.name && x.email == currentUserEmail).length == 0) {
         let animal_from_db = location_animals[currentShelter].find(x => x.name == currentAnimal)
-        savedAnimals.push(animal_from_db)
+        savedAnimals.push({animal: animal_from_db, email: currentUserEmail})
     }
     let arr_of_html = getHTMLToRenderForShelter({location: currentShelter})
     res.render('shelter1', {form: arr_of_html});
@@ -486,7 +493,7 @@ _server.post('/adoptionForm', function(req, res) {
     //console.log(req.body)
     let animal_from_db = location_animals[currentShelter]
     //console.log(currentShelter)
-    animal_from_db = animal_from_db.find(x => x.name == req.body.petName)
+    animal_from_db = animal_from_db.find(x => x.name == req.body.name)
     
     let HTMLToReturn = []
 
@@ -494,12 +501,12 @@ _server.post('/adoptionForm', function(req, res) {
                     <div><span class="typcn typcn-heart-outline icon heading"></span></div>
                         <div class="smallsep heading"></div>
                             <img src ="${animal_from_db.url}" width="10px" height="100px">
-                            <h1 class="heading" style = "text-align: center;">Fill out ${req.body.petName}'s adoption form!</h1>
+                            <h1 class="heading" style = "text-align: center;">Fill out ${req.body.name}'s adoption form!</h1>
                         </div>`
     let endHTML =  `
                         <div>
                             <form method="post" action="/setUpMeetingTimePage">
-                                <input type="text" name="petName" id="petName" hidden value=${req.body.petName}>
+                                <input type="text" name="name" id="name" hidden value=${req.body.name}>
                                 <button name = "backToMap">
                                     Back
                                 </button>
@@ -510,6 +517,98 @@ _server.post('/adoptionForm', function(req, res) {
     HTMLToReturn.push(endHTML)
 
     res.render('adoptionForm', {form: arr_of_html});
+})
+
+_server.post('/savedAnimals', function(req, res) { 
+    currentAnimal = req.body.name
+    if (savedAnimals.filter(x => x.animal.name == req.body.name && x.email == currentUserEmail).length == 0) {
+        let animal_from_db = location_animals[currentShelter].find(x => x.name == currentAnimal)
+        savedAnimals.push({animal: animal_from_db, email: currentUserEmail})
+    }
+    let arr_of_html = getHTMLToRenderForShelter({location: currentShelter})
+    res.render('savedAnimals', {form: arr_of_html});
+})
+
+_server.post('/upcomingAppointments', function(req, res) { 
+    console.log("function called")
+    let usersUpComingAppts = upcomingAppts.filter(x => x.email == currentUserEmail)
+    let HTMLToReturn = []
+
+    //console.log(upcomingAppts)
+    let startHTML
+
+    if (usersUpComingAppts.length == 0) {
+        startHTML = `<div class="title">
+                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                        <div class="smallsep heading"></div>
+                            <h1 class="heading" style = "text-align: center;">You have no upcoming appointments</h1>
+                        </div>
+                    </a> </div>`
+        
+        HTMLToReturn.push(startHTML)
+    } else {
+        startHTML = `<div class="title">
+                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                        <div class="smallsep heading"></div>
+                            <h1 class="heading" style = "text-align: center;">You have  ${usersUpComingAppts.length} upcoming appointments</h1>
+                        </div>
+                    </a> </div>`
+        HTMLToReturn.push(startHTML)
+        usersUpComingAppts.forEach(async function(details) {
+            //console.log(details)
+            let animal = location_animals['Atlanta'].filter(y => y.name == details.name)
+            if (animal.length == 0) {
+                animal = location_animals['Best'].filter(y => y.name == details.name)
+                if (animal.length == 0) {
+                    animal = location_animals['DeKalb'].filter(y => y.name == details.name)
+                    if (animal.length == 0) {
+                        animal = location_animals['Fulton'].filter(y => y.name == details.name)
+                    }
+                }
+            }
+            //console.log(animal)
+            animal = animal[0]
+            let html = `<li style = "text-align: center; align-items: center;">
+                            <h4>Animal: ${animal.name}</h4>
+                            <img src ="${animal.url}" width="10px" height="100px">
+                            <div class = "Row"> 
+                                <div>
+                                Age: ${animal.age}
+                                </div>
+                                <div>
+                                Breed: ${animal.breed}
+                                </div>
+                                <div>
+                                ${animal.info}
+                                </div>
+                                <div>
+                                Appointment Date: ${details.date}
+                                </div>
+                                <div> 
+                                Appointment Time: ${details.time}
+                                </div>
+                                <div> 
+                                Location: ${location_animals[details.location][0].location}
+                                </div>
+                            </div>
+                        </li>
+                        <form method ="post" action="/SetUpMeetingTimePage">
+                        <input type="text" name="name" id="name" hidden value=${details.name}>
+                            <li style = "text-align: center; align-items: center;">
+                                    <button name = ${details.name} >Manage</button>
+                            </li>
+                        </form>`
+    
+            HTMLToReturn.push(html);
+        })
+    }
+    let HTMLEnd =  `<form method="post" action="/">
+                        <button name = "backToMap">
+                            Back
+                        </button>
+                    </form>`
+    HTMLToReturn.push(HTMLEnd);
+    res.render('upcomingAppointments', {form: HTMLToReturn});
 })
 
 _server.get('/views/styles.css', function(req, res) {
