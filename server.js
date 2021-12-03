@@ -516,7 +516,7 @@ _server.post('/adoptionForm', function(req, res) {
     HTMLToReturn.push(startHTML)
     HTMLToReturn.push(endHTML)
 
-    res.render('adoptionForm', {form: arr_of_html});
+    res.render('adoptionForm', {form: HTMLToReturn});
 })
 
 _server.post('/savedAnimals', function(req, res) { 
@@ -666,6 +666,12 @@ _server.post('/upcomingAppointments', function(req, res) {
                     </form>`
     HTMLToReturn.push(HTMLEnd);
     res.render('upcomingAppointments', {form: HTMLToReturn});
+})
+
+_server.post('/logOut', function(req, res) { 
+    currentUserEmail = undefined
+
+    res.sendFile(path.join(__dirname, requestHandler(req.body)))
 })
 
 _server.get('/views/styles.css', function(req, res) {
