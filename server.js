@@ -506,15 +506,106 @@ _server.post('/adoptionForm', function(req, res) {
     let animal_from_db = location_animals[currentShelter]
     //console.log(currentShelter)
     animal_from_db = animal_from_db.find(x => x.name == req.body.name)
-    
+    let appt = upcomingAppts.find(x => x.name == animal_from_db.name && x.email == currentUserEmail)
+    console.log(appt)
     let HTMLToReturn = []
 
-    let startHTML = `<div class="title">
-                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
-                        <div class="smallsep heading"></div>
-                            <img src ="${animal_from_db.url}" width="10px" height="100px">
-                            <h1 class="heading" style = "text-align: center;">Fill out ${req.body.name}'s adoption form!</h1>
-                        </div>`
+    let startHTML = `<div class="title" style = "text-align: center; align-items: center; max-width: 100%;">
+                        <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                            <div class="smallsep heading"></div>
+                                <img src ="${animal_from_db.url}" width="10px" height="100px">
+                                <h1 class="heading" style = "text-align: center;">Fill out ${currentAnimal}'s Adoption Form!</h1>
+                                <div>
+                                <ol>
+                                    <form method="post" action="/completeAdoptionForm">
+                                    <div>
+                                    <input type="text" name="name" id="name" value="Animal Name: ${currentAnimal}" disabled = "true">
+                                    </div>
+                                    <div>
+                                    <input type="text" name="location" id="location" value="Shelter: ${currentShelter}" disabled = "true">
+                                    </div>
+                                    <div>
+                                    <input type="text" name="email" id="email" value="Appt Details: ${appt.date} ${appt.time}" disabled = "true">
+                                    </div>
+
+                                    <div>
+                                        <label for="appt">Animal Name Animal ID Shelter Location Reservation Details Do you give consent to your designated microchip company to contact you if your pet is found?:</label>
+                                        <input type="text" name="microchip" id="microchip">
+                                    </div>
+                                    <div>
+                                        <label for="prevOwnership">I have owned a dog before:</label>
+                                        <input type="text" name="prevOwnership" id="prevOwnership">
+                                    </div>
+                                    <div>
+                                        <label for="walking">How often do you plan on walking your new pet?</label>
+                                        <input type="text" name="walking" id="walking">
+                                    </div>
+                                    <div>
+                                        <label for="playtime">What best describes a fun playtime with your dog?</label>
+                                        <input type="text" name="playtime" id="playtime">
+                                    </div>
+                                    <div>
+                                        <label for="livingSituation">What is your current living situation?</label>
+                                        <input type="text" name="livingSituation" id="livingSituation">
+                                    </div>
+                                    <div>
+                                        <label for="deposits">Are you prepared to pay pet deposits and/or monthly fees?</label>
+                                        <input type="text" name="deposits" id="deposits">
+                                    </div>
+                                    <div>
+                                        <label for="prevAdopt">Have you previously adopted from ${currentShelter}? </label>
+                                        <input type="text" name="prevAdopt" id="prevAdopt">
+                                    </div>
+                                    <div>
+                                        <label for="smallChildren">Are there small children living or that frequently visit the household?</label>
+                                        <input type="text" name="smallChildren" id="smallChildren">
+                                    </div>
+                                    <div>
+                                        <label for="otherAnimals">Are there animals living in the household?</label>
+                                        <input type="text" name="otherAnimals" id="otherAnimals">
+                                    </div>
+                                    <div>
+                                        <label for="introduction">How do you plan to introduce your pets?</label>
+                                        <input type="text" name="introduction" id="introduction">
+                                    </div>
+                                    <div>
+                                        <label for="energyLevel">What energy level are you looking for in a pet?</label>
+                                        <input type="text" name="energyLevel" id="energyLevel">
+                                    </div>
+                                    <div>
+                                        <label for="cuddle">How important is it to you that your pet likes to cuddle?</label>
+                                        <input type="text" name="cuddle" id="cuddle">
+                                    </div>
+                                    <div>
+                                        <label for="weekend">What does your average weekend look like?</label>
+                                        <input type="text" name="weekend" id="weekend">
+                                    </div>
+                                    <div>
+                                        <label for="meetNewPeople">How often would your pet be meeting new people?</label>
+                                        <input type="text" name="meetNewPeople" id="meetNewPeople">
+                                    </div>
+                                    <div>
+                                        <label for="friendsAnimals">Do you intend to get your pet together with friend’s animals?</label>
+                                        <input type="text" name="friendsAnimals" id="friendsAnimals">
+                                    </div>
+                                    <div>
+                                        <label for="characteristics">What characteristics are you looking for in a pet?</label>
+                                        <input type="text" name="characteristics" id="characteristics">
+                                    </div>
+                                    <div>
+                                        <label for="adjustTime">How long do yo uthink it will take your new pet to adjust to your home and family?</label>
+                                        <input type="text" name="adjustTime" id="adjustTime">
+                                    </div>
+                                    <div>
+                                        <label for="questions">Questions</label>
+                                        <input type="text" name="questions" id="questions">
+                                    </div>
+                                    <div>
+                                        <input type = "submit">
+                                    </div>
+                                    </form>
+                                    </ol>
+                                </div>`
     let endHTML =  `
                         <div>
                             <form method="post" action="/setUpMeetingTimePage">
@@ -530,6 +621,37 @@ _server.post('/adoptionForm', function(req, res) {
 
     res.render('adoptionForm', {form: HTMLToReturn});
 })
+_server.post('/completeAdoptionForm', function(req, res) { 
+
+    animalsWithAdoptionForms.push({form: req.body, email: currentUserEmail})
+    let animal_from_db = location_animals[currentShelter]
+    console.log(req.body)
+    animal_from_db = animal_from_db.find(x => x.name == currentAnimal)
+    
+    let HTMLToReturn = []
+
+    let startHTML = `<div class="title">
+                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                        <div class="smallsep heading"></div>
+                            <img src ="${animal_from_db.url}" width="10px" height="100px">
+                            <h1 class="heading" style = "text-align: center;">Completed!</h1>
+                        </div>`
+    let endHTML =  `
+                        <div>
+                            <form method="post" action="/setUpMeetingTimePage">
+                                <input type="text" name="name" id="name" hidden value=${currentAnimal}>
+                                <button name = "backToMap">
+                                    Back
+                                </button>
+                            </form>
+                        </a> </div>
+                        `
+    HTMLToReturn.push(startHTML)
+    HTMLToReturn.push(endHTML)
+
+    res.render('adoptionForm', {form: HTMLToReturn});
+})
+
 
 _server.post('/savedAnimals', function(req, res) { 
     console.log("function called")
@@ -694,4 +816,8 @@ _server.get('/views/styles.css', function(req, res) {
 _server.listen(port, function() {
     console.log("Web server listening on port: " + port)
 })
+
+
+
+
 
