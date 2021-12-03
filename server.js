@@ -520,13 +520,70 @@ _server.post('/adoptionForm', function(req, res) {
 })
 
 _server.post('/savedAnimals', function(req, res) { 
-    currentAnimal = req.body.name
-    if (savedAnimals.filter(x => x.animal.name == req.body.name && x.email == currentUserEmail).length == 0) {
-        let animal_from_db = location_animals[currentShelter].find(x => x.name == currentAnimal)
-        savedAnimals.push({animal: animal_from_db, email: currentUserEmail})
+    console.log("function called")
+    let usersSavedAnimals = savedAnimals.filter(x => x.email == currentUserEmail)
+    let HTMLToReturn = []
+
+    //console.log(upcomingAppts)
+    let startHTML
+
+    if (usersSavedAnimals.length == 0) {
+        startHTML = `<div class="title">
+                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                        <div class="smallsep heading"></div>
+                            <h1 class="heading" style = "text-align: center;">You have no saved animals</h1>
+                        </div>
+                    </a> </div>`
+        
+        HTMLToReturn.push(startHTML)
+    } else {
+        startHTML = `<div class="title">
+                    <div><span class="typcn typcn-heart-outline icon heading"></span></div>
+                        <div class="smallsep heading"></div>
+                            <h1 class="heading" style = "text-align: center;">You have  ${usersSavedAnimals.length} saved animals</h1>
+                        </div>
+                    </a> </div>`
+        HTMLToReturn.push(startHTML)
+        usersSavedAnimals.forEach(async function(details) {
+            console.log(details)
+            let animal = details.animal
+            
+            console.log(animal)
+            let html = `<li style = "text-align: center; align-items: center;">
+                            <h4>Animal: ${animal.name}</h4>
+                            <img src ="${animal.url}" width="10px" height="100px">
+                            <div class = "Row"> 
+                                <div>
+                                Age: ${animal.age}
+                                </div>
+                                <div>
+                                Breed: ${animal.breed}
+                                </div>
+                                <div>
+                                ${animal.info}
+                                </div>
+                                <div> 
+                                Location: ${animal.location}
+                                </div>
+                            </div>
+                        </li>
+                        <form method ="post" action="/SetUpMeetingTimePage">
+                        <input type="text" name="name" id="name" hidden value=${animal.name}>
+                            <li style = "text-align: center; align-items: center;">
+                                    <button name = ${animal.name} >Manage</button>
+                            </li>
+                        </form>`
+    
+            HTMLToReturn.push(html);
+        })
     }
-    let arr_of_html = getHTMLToRenderForShelter({location: currentShelter})
-    res.render('savedAnimals', {form: arr_of_html});
+    let HTMLEnd =  `<form method="post" action="/">
+                        <button name = "backToMap">
+                            Back
+                        </button>
+                    </form>`
+    HTMLToReturn.push(HTMLEnd);
+    res.render('savedAnimals', {form: HTMLToReturn});
 })
 
 _server.post('/upcomingAppointments', function(req, res) { 

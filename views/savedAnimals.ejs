@@ -12,16 +12,11 @@
 </head>
 <body style = "background-color: rgba(139, 0, 0, 0.486);">
     <%- form[0] %>
-  
-    <!-- <script type="text/javascript">
-        console.log(document.getElementById("appointment"))
-        if (!document.getElementById("appointment").disabled) {
-              document.getElementById("appointment").removeAttr("disabled")
-        }
-
-  
-    </script> -->
-
-    <%- form[form.length - 1] %>
-
+    <div id="cocktails">
+        <ul style = "text-align: center;">
+            <% for (i = 1; i < form.length; i++) { %>
+                <%- form[i] %>
+            <% } %>
+        </ul>
+    </div>
 </body>
