@@ -13,11 +13,30 @@
 
 <html lang="en">
   <head>
+    <div class="main_nav">
+        <div class="container">
+          <div class="mobile-toggle"> <span></span> <span></span> <span></span> </div>
+          <nav>
+            <ul>
+                <li>
+                  <form method = "post" action = "/upcomingAppointments">
+                      <button>Upcoming Appointments</button>
+                  </form>
+                </li>
+                <li>
+                    <form method = "post" action = "/upcomingAppointments">
+                        <button>Saved Animals</button>
+                    </form>
+                </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.9.0/css/ol.css" type="text/css">
     <style>
       .map {
-        height: 100%;
+        height: 95%;
         width: 100%;
       }
     </style>
@@ -133,5 +152,19 @@
             }
         });
     </script>
+              <nav style = "height: 15px;">
+                <ul>
+                    <li>
+                      <form method = "post" action = "/upcomingAppointments">
+                          <button>Upcoming Appointments</button>
+                      </form>
+                    </li>
+                    <li>
+                        <form method = "post" action = "/upcomingAppointments">
+                            <button>Saved Animals</button>
+                        </form>
+                    </li>
+                </ul>
+              </nav>
   </body>
 </html>
