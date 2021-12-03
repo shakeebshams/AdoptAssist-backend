@@ -668,8 +668,28 @@ li {
 }
 /* Spacing
 ********************************************************************* */
-button, .button {
+.button {
 	margin-bottom: 1rem;
+	background-color: #17c01c; /* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+}
+button[class="button"]:hover {
+	background: #e55d87;
+	text-decoration: none;
+	cursor: pointer;
+}
+button {
+	margin-bottom: 1rem;
+}
+button:hover {
+	background: #f5edf0af;
+	cursor: pointer;
 }
 input, textarea, select, fieldset {
 	margin-bottom: 1.5rem;

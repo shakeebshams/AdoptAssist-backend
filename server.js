@@ -98,7 +98,8 @@ let location_animals = {
             age: '1',
             breed: 'Yellow Lab',
             info: 'Bella is not potty-trained yet, but has learned simple commands and loves walks and pets',
-            shelterName: 'Best Friends Lifesaving Center'
+            shelterName: 'Best Friends Lifesaving Center',
+            Address: '1692 Oak St SE, Marietta, GA 30060'
         },
         {
             url: `https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/golden-retriever-royalty-free-image-506756303-1560962726.jpg?crop=0.672xw:1.00xh;0.166xw,0&resize=640:*`,
@@ -132,6 +133,7 @@ let location_animals = {
             breed: 'Pug',
             info: 'Cooper can be nervous around other dogs, but loves humans and treats',
             shelterName:'Atlanta Humane Society',
+            Address: '981 Howell Mill Rd NW, Atlanta, GA 30318',
 
         },
         {
@@ -165,7 +167,8 @@ let location_animals = {
             age: '7',
             breed: 'Australian Shepherd',
             info: 'Sadie sheds a lot, but is a great dog and loves pets',
-            shelterName: 'Fulton County Animal Services'
+            shelterName: 'Fulton County Animal Services',
+            Address: '860 Marietta Blvd NW, Atlanta, GA 30318'
         },
         {
             url: `https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/6/2019/10/08113321/Dog-behavior-Kasper-Luijsterburg.jpg`,
@@ -199,6 +202,7 @@ let location_animals = {
             breed: 'Yellow Lab',            
             info: 'Stella loves to go to the park and hang out with other dogs',
             shelterName: 'DeKalb County Animal Services',
+            Address: '3280 Chamblee Dunwoody Rd, Chamblee, GA 30341'
         },
         {
             url: `https://cdn.cnn.com/cnnnext/dam/assets/201030094143-stock-rhodesian-ridgeback-super-tease.jpg`,
@@ -239,10 +243,12 @@ function getHTMLToRenderForShelter(obj) {
     let details_from_db = location_animals[location]
     let arr_of_html = []
 
-    let header =`<div class="title">
+    let header =`<div class="title" style = "text-align: center; align-items: center; max-width: 100%;">
                     <div><span class="typcn typcn-heart-outline icon heading"></span></div>
                         <div class="smallsep heading"></div>
                             <h1 class="heading" style = "text-align: center;"> ${details_from_db[0].shelterName}</h1>
+                            <h2 class="heading" style = "text-align: center;"> ${details_from_db[0].Address}</h2>
+                            <h2 class="heading" style = "text-align: center;"> Meet our animals!</h2>
                             <div class="mouse">
                         <div class="wheel"></div>
                         </div>
@@ -250,19 +256,25 @@ function getHTMLToRenderForShelter(obj) {
     arr_of_html.push(header)
 
     details_from_db.forEach(async function(details) {
-        let html = `<li style = "text-align: center; align-items: center;">
+        let html = `<li style = "list-style: none; text-align: center; align-items: center;">
                         <h4>Animal: ${details.name}</h4>
                         <img src ="${details.url}" width="10px" height="100px">
-                        <div class = "Row"> 
-                            ${details.age}
-                            ${details.breed}
+                        <div style = "text-align: center; align-items: center;"> 
+                            <div>
+                            Age : ${details.age}
+                            </div>
+                            <div>
+                            Breed: ${details.breed}
+                            </div>
+                            <div>
                             ${details.info}
+                            </div>
                         </div>
                     </li>
                     <form method ="post" action="/SetUpMeetingTimePage">
                     <input type="text" name="name" id="name" hidden value=${details.name}>
-                        <li style = "text-align: center; align-items: center;">
-                                <button name = ${details.name} >Meet Me!</button>
+                        <li style = "list-style: none; text-align: center; align-items: center;">
+                                <button class = "button" name = ${details.name} >Meet Me!</button>
                         </li>
                     </form>`
 
@@ -301,7 +313,7 @@ _server.post('/SetUpMeetingTimePage', function(req, res) {
         appointmentDisabled = 'disabled = "true"'
     }
 
-    let startHTML = `<div class="title">
+    let startHTML = `<div class="title" style = "text-align: center; align-items: center; max-width: 100%;">
                         <div><span class="typcn typcn-heart-outline icon heading"></span></div>
                         <div class="smallsep heading"></div>
                             <img src ="${animal_from_db.url}" width="10px" height="100px">
@@ -364,13 +376,13 @@ _server.post('/meetingTimePage', function(req, res) {
     //console.log(currentShelter)
     animal_from_db = animal_from_db.find(x => x.name == req.body.name)
 
-    let startHTML = `<div class="title">
+    let startHTML = `<div class="title" style = "text-align: center; align-items: center; max-width: 100%;">
                     <div><span class="typcn typcn-heart-outline icon heading"></span></div>
                         <div class="smallsep heading"></div>
                             <img src ="${animal_from_db.url}" width="10px" height="100px">
                             <h1 class="heading" style = "text-align: center;"> ${currentAnimal}</h1>
                             <h2 class="heading">Set Up A day to meet Me</h2>
-                            <div type = "column" class = "column">
+                            <div>
                                 <form method="post" action="/completeMeetingTime">
                                 <input type="text" name="name" id="name" hidden value=${currentAnimal}>
                                 <input type="text" name="location" id="location" hidden value=${currentShelter}>
@@ -399,13 +411,13 @@ _server.post('/meetingTimePage', function(req, res) {
                                     <label for="inputName">Let us know a bit about you!</label>
                                 </div>
                                 <div>
-                                    <input id="inputName" name="firstName" placeholder = "First Name">
+                                    <input type = "text" id="inputName" name="firstName" placeholder = "First Name">
                                 </div>
                                 <div>
-                                    <input id="inputName" name="lastName" placeholder = "Last Name">
+                                    <input type = "text" id="inputName" name="lastName" placeholder = "Last Name">
                                 </div>
                                 <div>
-                                    <input id="inputName" name="phoneNumber" placeholder = "Phone Number">
+                                    <input type = "text" id="inputName" name="phoneNumber" placeholder = "Phone Number">
                                 </div>
 
                                 <div>
