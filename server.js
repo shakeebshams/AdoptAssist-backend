@@ -91,6 +91,10 @@ _server.post('/', function(req, res) {
     res.sendFile(path.join(__dirname, requestHandler(req.body)))
 })
 
+_server.post('/login', function(req, res) {
+    res.render('login');
+})
+
 let location_animals = {
     'Best': [{
             url: `https://yt3.ggpht.com/ytc/AKedOLRvxGYSdEHqu0X4EYcJ2kq7BttRKBNpfwdHJf3FSg=s900-c-k-c0x00ffffff-no-rj`,
