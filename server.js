@@ -95,6 +95,10 @@ _server.post('/login', function(req, res) {
     res.render('login');
 })
 
+_server.post('/map', function(req, res) {
+    res.render('findAPet');
+})
+
 let location_animals = {
     'Best': [{
             url: `https://yt3.ggpht.com/ytc/AKedOLRvxGYSdEHqu0X4EYcJ2kq7BttRKBNpfwdHJf3FSg=s900-c-k-c0x00ffffff-no-rj`,
