@@ -5,7 +5,7 @@ import axios from 'axios'
 import ejs from 'ejs'
 import dotenv from 'dotenv'
 import fs from 'fs'
-import { dirname } from 'path/posix'
+import MeetingDB from './schemas/Meeting.js'
 dotenv.config()
 
 const port = process.env.PORT || 3000
@@ -458,8 +458,27 @@ _server.post('/meetingTimePage', function(req, res) {
 })
 
 _server.post('/completeMeetingTime', function(req, res) { 
-
+    console.log('AREEB SHAFQAT')
     console.log(req.body)
+    let bing = req.body
+    let info = new MeetingDB({
+        name: bing.name,
+        location: bing.location,
+        email: bing.email,
+        date: bing.date,
+        time: bing.time,
+        firstName: bing.firstName,
+        lastName: bing.lastName,
+        phoneNumber: bing.phoneNumber,
+    })
+    console.log(bing.name)
+    info.save(function(err){
+        if (!err){
+            console.log('task saved to db')
+        } else {
+            console.log(err)
+        }
+    })
     upcomingAppts.push(req.body)
     let animal_from_db = location_animals[currentShelter]
     console.log(currentShelter)
