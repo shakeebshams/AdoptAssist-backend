@@ -826,7 +826,7 @@ _server.post('/upcomingAppointments', function(req, res) {
                         </button>
                     </form>`
     HTMLToReturn.push(HTMLEnd);
-    res.render('upcomingAppointments', {form: HTMLToReturn});
+    res.render('upComingAppointments', {form: HTMLToReturn});
 })
 
 _server.post('/logOut', function(req, res) { 
