@@ -820,7 +820,7 @@ _server.post('/upcomingAppointments', function(req, res) {
             HTMLToReturn.push(html);
         })
     }
-    let HTMLEnd =  `<form method="post" action="/">
+    let HTMLEnd =  `<form method="post" action="/map">
                         <button name = "backToMap">
                             Back
                         </button>
